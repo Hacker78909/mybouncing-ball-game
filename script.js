@@ -1,44 +1,61 @@
-window.onload = function() {
+// Game variables
+let paddleX = 200;
+let paddleY = 450;
+let ballX;
+let ballY;
+let ballXSpeed = 1;
+let ballYSpeed = 1;
+let score = 0;
+let highestScore = 0;
+let gameOver = false;
+let restartButton;
+let timer;
+let random;
+
+// Initialize the game
+function initGame() {
   // Get the canvas element and create a 2D drawing context
-  var canvas = document.getElementById("gameCanvas");
-  var context = canvas.getContext("2d");
+  const canvas = document.getElementById("gameCanvas");
+  const context = canvas.getContext("2d");
+  canvas.width = 500;
+  canvas.height = 500;
 
-  // Game variables
-  var paddleX = 200;
-  var paddleY = 450;
-  var ballX;
-  var ballY;
-  var ballXSpeed = 1;
-  var ballYSpeed = 1;
-  var score = 0;
-  var highestScore = 0;
-  var gameOver = false;
-  var restartButton;
-  var timer;
-  var random;
+  // Set up the canvas and game objects
+  random = new Math.seedrandom();
+  ballX = random() * (canvas.width - 20);
+  ballY = random() * (canvas.height - 20);
 
-  // Initialize the game
-  function initGame() {
-    // Set up the canvas and game objects
-    random = new Random();
-    ballX = random.nextInt(canvas.width - 20);
-    ballY = random.nextInt(canvas.height - 20);
+  // Create a restart button and hide it initially
+  restartButton = document.createElement("button");
+  restartButton.innerHTML = "Restart";
+  restartButton.style.position = "absolute";
+  restartButton.style.left = "200px";
+  restartButton.style.top = "225px";
+  restartButton.style.width = "100px";
+  restartButton.style.height = "50px";
+  restartButton.style.display = "none";
+  restartButton.addEventListener("click", restartGame);
+  document.body.appendChild(restartButton);
 
-    // Create a restart button and hide it initially
-    restartButton = document.createElement("button");
-    restartButton.innerHTML = "Restart";
-    restartButton.style.position = "absolute";
-    restartButton.style.left = "200px";
-    restartButton.style.top = "225px";
-    restartButton.style.width = "100px";
-    restartButton.style.height = "50px";
-    restartButton.style.display = "none";
-    restartButton.addEventListener("click", restartGame);
-    document.body.appendChild(restartButton);
+  // Start the game loop
+  timer = setInterval(updateGame, 10);
 
-    // Start the game loop
-    timer = setInterval(updateGame, 10);
-  }
+  // Handle key press events
+  document.addEventListener("keydown", function(event) {
+    if (event.keyCode === 37) {
+      // Left arrow key
+      paddleX -= 10;
+    } else if (event.keyCode === 39) {
+      // Right arrow key
+      paddleX += 10;
+    }
+
+    if (paddleX < 0) {
+      paddleX = 0;
+    } else if (paddleX > canvas.width - 80) {
+      paddleX = canvas.width - 80;
+    }
+  });
 
   // Update the game state
   function updateGame() {
@@ -105,31 +122,16 @@ window.onload = function() {
   function restartGame() {
     gameOver = false;
     restartButton.style.display = "none";
-    ballX = random.nextInt(canvas.width - 20);
-    ballY = random.nextInt(canvas.height - 20);
+    ballX = random() * (canvas.width - 20);
+    ballY = random() * (canvas.height - 20);
     ballXSpeed = 1;
     ballYSpeed = 1;
     score = 0;
     timer = setInterval(updateGame, 10);
   }
+}
 
-  // Handle key press events
-  document.addEventListener("keydown", function(event) {
-    if (event.keyCode === 37) {
-      // Left arrow key
-      paddleX -= 10;
-    } else if (event.keyCode === 39) {
-      // Right arrow key
-      paddleX += 10;
-    }
-
-    if (paddleX < 0) {
-      paddleX = 0;
-    } else if (paddleX > canvas.width - 80) {
-      paddleX = canvas.width - 80;
-    }
-  });
-
-  // Start the game
+// Start the game
+window.onload = function() {
   initGame();
 };
